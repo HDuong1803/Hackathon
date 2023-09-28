@@ -18,13 +18,12 @@ class TimelineService {
     try {
       const {
         batchNo,
-        producer,
         warehouser,
         distributor,
         vaccinationStation,
         vaccinatePerson
       } = payload
-      let timeline: any = await Timeline.findOne({
+      let timeline = await Timeline.findOne({
         batchNo
       })
 
@@ -33,7 +32,6 @@ class TimelineService {
           { batchNo: batchNo },
           {
             $set: {
-              producer,
               warehouser,
               distributor,
               vaccinationStation,

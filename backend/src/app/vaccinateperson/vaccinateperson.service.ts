@@ -1,18 +1,50 @@
 import { OutputListVaccinatePerson, TimelineService } from '@app'
+import { Constant } from '@constants'
 import { VaccinatePerson } from '@schemas'
 
 class VaccinatePersonService {
-  public async createVaccinatePerson(batchNo: string): Promise<any> {
-    const timeline = await TimelineService.createTimeline({
+  public async createVaccinatePerson(payload: any): Promise<any> {
+    const {
       batchNo,
-      producer: true,
+      from,
+      to,
+      status,
+      transactionHash,
+      blockHash,
+      blockNumber,
+      confirmations,
+      byzantium,
+      transactionIndex,
+      contractAddress,
+      nextAcction = Constant.NEXT_ACTION.DISTRIBUTOR,
+      ipfsLink
+    } = payload
+    const results = await VaccinatePerson.findOneAndUpdate(
+      { batchNo },
+      {
+        $set: {
+          from,
+          to,
+          status: status === 1 ? 'SUCCESS' : 'UNSUCCESS',
+          transactionHash,
+          blockHash,
+          blockNumber,
+          confirmations,
+          byzantium,
+          transactionIndex,
+          contractAddress,
+          nextAcction,
+          ipfsLink
+        }
+      }
+    )
+    await TimelineService.createTimeline({
+      batchNo,
       warehouser: true,
-      distributor: true,
-      vaccinationStation: true,
-      vaccinatePerson: true
+      distributor: false,
+      vaccinationStation: false,
+      vaccinatePerson: false
     })
-
-    const results = await timeline.save()
 
     return results
   }
@@ -49,6 +81,30 @@ class VaccinatePersonService {
     return {
       data: items,
       total: totalItem
+    }
+  }
+
+  public async countSuccess() {
+    try {
+      const result = await VaccinatePerson.countDocuments({
+        status: 'SUCCESS'
+      })
+
+      return result
+    } catch (error: any) {
+      throw new Error(error.message)
+    }
+  }
+
+  public async countUnSuccess() {
+    try {
+      const result = await VaccinatePerson.countDocuments({
+        status: 'UNSUCCESS'
+      })
+
+      return result
+    } catch (error: any) {
+      throw new Error(error.message)
     }
   }
 }

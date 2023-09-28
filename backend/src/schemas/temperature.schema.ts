@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
-export interface ITemperature extends Document {
+export interface ITemperature {
   temperature: string
   humidity: string
   sensorName: string

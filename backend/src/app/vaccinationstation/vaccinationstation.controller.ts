@@ -1,14 +1,12 @@
+import { IVaccinationStation } from '@app'
 import { logError, onError, onSuccess, type Option } from '@constants'
 import { Singleton } from '@providers'
 import { Request as ExpressRequest } from 'express'
 import {
-  // Body,
+  Body,
   Controller,
-  // Delete,
   Get,
-  // Path,
-  // Post,
-  // Put,
+  Post,
   Query,
   Request,
   Route,
@@ -20,6 +18,23 @@ import {
 @Route('vaccinationStation')
 @Security('authorization')
 export class VaccinationStationController extends Controller {
+  @Post('create')
+  public async createVaccinationStation(
+    @Request() req: ExpressRequest,
+    @Body() payload: IVaccinationStation
+  ): Promise<Option<any>> {
+    try {
+      const result =
+        await Singleton.getVaccinationStationInstance().createVaccinationStation(
+          payload
+        )
+      return onSuccess(result)
+    } catch (error: any) {
+      logError(error, req)
+      return onError(error, this)
+    }
+  }
+
   @Get('search')
   public async SearchVaccinationStation(
     @Request() req: ExpressRequest,
@@ -37,7 +52,7 @@ export class VaccinationStationController extends Controller {
     }
   }
 
-  @Get('vaccination-station')
+  @Get('detail')
   public async getVaccinationStation(
     @Request() req: ExpressRequest,
     @Query() _id: string
@@ -54,7 +69,7 @@ export class VaccinationStationController extends Controller {
     }
   }
 
-  @Get('list/vaccination-station')
+  @Get('all')
   public async getListVaccinationStation(
     @Request() req: ExpressRequest,
     @Query() page: number = 1,
@@ -67,6 +82,32 @@ export class VaccinationStationController extends Controller {
           limit
         )
       return onSuccess(data, total)
+    } catch (error: any) {
+      logError(error, req)
+      return onError(error, this)
+    }
+  }
+
+  @Get('countsuccess')
+  public async countSuccess(
+    @Request() req: ExpressRequest
+  ): Promise<Option<any>> {
+    try {
+      const result = await Singleton.getVaccinationStationInstance().countSuccess()
+      return onSuccess(result)
+    } catch (error: any) {
+      logError(error, req)
+      return onError(error, this)
+    }
+  }
+
+  @Get('countunsuccess')
+  public async countUnSuccess(
+    @Request() req: ExpressRequest
+  ): Promise<Option<any>> {
+    try {
+      const result = await Singleton.getVaccinationStationInstance().countUnSuccess()
+      return onSuccess(result)
     } catch (error: any) {
       logError(error, req)
       return onError(error, this)

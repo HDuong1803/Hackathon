@@ -1,18 +1,50 @@
 import { OutputListVaccinationStation, TimelineService } from '@app'
+import { Constant } from '@constants'
 import { VaccinationStation } from '@schemas'
 
 class VaccinationStationService {
-  public async createVaccinationStation(batchNo: string): Promise<any> {
-    const timeline = await TimelineService.createTimeline({
+  public async createVaccinationStation(payload: any): Promise<any> {
+    const {
       batchNo,
-      producer: true,
+      from,
+      to,
+      status,
+      transactionHash,
+      blockHash,
+      blockNumber,
+      confirmations,
+      byzantium,
+      transactionIndex,
+      contractAddress,
+      nextAcction = Constant.NEXT_ACTION.OBJECT_INJECTION,
+      ipfsLink
+    } = payload
+    const results = await VaccinationStation.findOneAndUpdate(
+      { batchNo },
+      {
+        $set: {
+          from,
+          to,
+          status: status === 1 ? 'SUCCESS' : 'UNSUCCESS',
+          transactionHash,
+          blockHash,
+          blockNumber,
+          confirmations,
+          byzantium,
+          transactionIndex,
+          contractAddress,
+          nextAcction,
+          ipfsLink
+        }
+      }
+    )
+    await TimelineService.createTimeline({
+      batchNo,
       warehouser: true,
       distributor: true,
       vaccinationStation: true,
       vaccinatePerson: false
     })
-
-    const results = await timeline.save()
 
     return results
   }
@@ -49,6 +81,30 @@ class VaccinationStationService {
     return {
       data: items,
       total: totalItem
+    }
+  }
+
+  public async countSuccess() {
+    try {
+      const result = await VaccinationStation.countDocuments({
+        status: 'SUCCESS'
+      })
+
+      return result
+    } catch (error: any) {
+      throw new Error(error.message)
+    }
+  }
+
+  public async countUnSuccess() {
+    try {
+      const result = await VaccinationStation.countDocuments({
+        status: 'UNSUCCESS'
+      })
+
+      return result
+    } catch (error: any) {
+      throw new Error(error.message)
     }
   }
 }

@@ -1,14 +1,12 @@
+import { IUser } from '@app'
 import { logError, onError, onSuccess, type Option } from '@constants'
 import { Singleton } from '@providers'
 import { Request as ExpressRequest } from 'express'
 import {
-  // Body,
+  Body,
   Controller,
-  // Delete,
   Get,
-  // Path,
-  // Post,
-  // Put,
+  Post,
   Query,
   Request,
   Route,
@@ -20,7 +18,35 @@ import {
 @Route('user')
 @Security('authorization')
 export class UserController extends Controller {
-  @Get('user')
+  @Post('create')
+  public async createUser(
+    @Request() req: ExpressRequest,
+    @Body() payload: IUser
+  ): Promise<Option<any>> {
+    try {
+      const result = await Singleton.getUserInstance().createUser(payload)
+      return onSuccess(result)
+    } catch (error: any) {
+      logError(error, req)
+      return onError(error, this)
+    }
+  }
+
+  @Get('serch')
+  public async searchUser(
+    @Request() req: ExpressRequest,
+    @Query() keyword: string
+  ): Promise<Option<any>> {
+    try {
+      const result = await Singleton.getUserInstance().searchUser(keyword)
+      return onSuccess(result)
+    } catch (error: any) {
+      logError(error, req)
+      return onError(error, this)
+    }
+  }
+
+  @Get('detail')
   public async getUser(
     @Request() req: ExpressRequest,
     @Query() _id: string
@@ -34,7 +60,7 @@ export class UserController extends Controller {
     }
   }
 
-  @Get('list/user')
+  @Get('all')
   public async getListUser(
     @Request() req: ExpressRequest,
     @Query() page: number = 1,
@@ -46,6 +72,19 @@ export class UserController extends Controller {
         limit
       )
       return onSuccess(data, total)
+    } catch (error: any) {
+      logError(error, req)
+      return onError(error, this)
+    }
+  }
+
+  @Get('role')
+  public async getUserRole(
+    @Request() req: ExpressRequest
+  ): Promise<Option<any>> {
+    try {
+      const data = await Singleton.getUserInstance().getUserRole()
+      return onSuccess(data)
     } catch (error: any) {
       logError(error, req)
       return onError(error, this)

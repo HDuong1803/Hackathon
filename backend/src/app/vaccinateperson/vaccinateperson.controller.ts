@@ -1,14 +1,12 @@
+import { IVaccinatePerson } from '@app'
 import { logError, onError, onSuccess, type Option } from '@constants'
 import { Singleton } from '@providers'
 import { Request as ExpressRequest } from 'express'
 import {
-  // Body,
+  Body,
   Controller,
-  // Delete,
   Get,
-  // Path,
-  // Post,
-  // Put,
+  Post,
   Query,
   Request,
   Route,
@@ -20,6 +18,23 @@ import {
 @Route('vaccinatePerson')
 @Security('authorization')
 export class VaccinatePersonController extends Controller {
+  @Post('create')
+  public async createVaccinatePerson(
+    @Request() req: ExpressRequest,
+    @Body() payload: IVaccinatePerson
+  ): Promise<Option<any>> {
+    try {
+      const result =
+        await Singleton.getVaccinatePersonInstance().createVaccinatePerson(
+          payload
+        )
+      return onSuccess(result)
+    } catch (error: any) {
+      logError(error, req)
+      return onError(error, this)
+    }
+  }
+
   @Get('search')
   public async SearchVaccinatePerson(
     @Request() req: ExpressRequest,
@@ -37,7 +52,7 @@ export class VaccinatePersonController extends Controller {
     }
   }
 
-  @Get('vaccinate-person')
+  @Get('detail')
   public async getVaccinePerson(
     @Request() req: ExpressRequest,
     @Query() _id: string
@@ -52,7 +67,7 @@ export class VaccinatePersonController extends Controller {
     }
   }
 
-  @Get('list/vaccinate-person')
+  @Get('all')
   public async getListVaccinatePerson(
     @Request() req: ExpressRequest,
     @Query() page: number = 1,
@@ -65,6 +80,32 @@ export class VaccinatePersonController extends Controller {
           limit
         )
       return onSuccess(data, total)
+    } catch (error: any) {
+      logError(error, req)
+      return onError(error, this)
+    }
+  }
+
+  @Get('countsuccess')
+  public async countSuccess(
+    @Request() req: ExpressRequest
+  ): Promise<Option<any>> {
+    try {
+      const result = await Singleton.getVaccinatePersonInstance().countSuccess()
+      return onSuccess(result)
+    } catch (error: any) {
+      logError(error, req)
+      return onError(error, this)
+    }
+  }
+
+  @Get('countunsuccess')
+  public async countUnSuccess(
+    @Request() req: ExpressRequest
+  ): Promise<Option<any>> {
+    try {
+      const result = await Singleton.getVaccinatePersonInstance().countUnSuccess()
+      return onSuccess(result)
     } catch (error: any) {
       logError(error, req)
       return onError(error, this)

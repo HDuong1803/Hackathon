@@ -1,14 +1,12 @@
+import { IWarehouser } from '@app'
 import { logError, onError, onSuccess, type Option } from '@constants'
 import { Singleton } from '@providers'
 import { Request as ExpressRequest } from 'express'
 import {
-  // Body,
+  Body,
   Controller,
-  // Delete,
   Get,
-  // Path,
-  // Post,
-  // Put,
+  Post,
   Query,
   Request,
   Route,
@@ -20,6 +18,22 @@ import {
 @Route('warehouser')
 @Security('authorization')
 export class WarehouserController extends Controller {
+  @Post('create')
+  public async createWarehouser(
+    @Request() req: ExpressRequest,
+    @Body() payload: IWarehouser
+  ): Promise<Option<any>> {
+    try {
+      const result = await Singleton.getWarehouserInstance().createWarehouser(
+        payload
+      )
+      return onSuccess(result)
+    } catch (error: any) {
+      logError(error, req)
+      return onError(error, this)
+    }
+  }
+
   @Get('search')
   public async SearchWarehouser(
     @Request() req: ExpressRequest,
@@ -36,7 +50,7 @@ export class WarehouserController extends Controller {
     }
   }
 
-  @Get('warehouser')
+  @Get('detail')
   public async getWarehouser(
     @Request() req: ExpressRequest,
     @Query() _id: string
@@ -50,7 +64,7 @@ export class WarehouserController extends Controller {
     }
   }
 
-  @Get('list/warehouser')
+  @Get('all')
   public async getListWarehouser(
     @Request() req: ExpressRequest,
     @Query() page: number = 1,
@@ -60,6 +74,32 @@ export class WarehouserController extends Controller {
       const { data, total } =
         await Singleton.getWarehouserInstance().getListWarehouser(page, limit)
       return onSuccess(data, total)
+    } catch (error: any) {
+      logError(error, req)
+      return onError(error, this)
+    }
+  }
+
+  @Get('countsuccess')
+  public async countSuccess(
+    @Request() req: ExpressRequest
+  ): Promise<Option<any>> {
+    try {
+      const result = await Singleton.getWarehouserInstance().countSuccess()
+      return onSuccess(result)
+    } catch (error: any) {
+      logError(error, req)
+      return onError(error, this)
+    }
+  }
+
+  @Get('countunsuccess')
+  public async countUnSuccess(
+    @Request() req: ExpressRequest
+  ): Promise<Option<any>> {
+    try {
+      const result = await Singleton.getWarehouserInstance().countUnSuccess()
+      return onSuccess(result)
     } catch (error: any) {
       logError(error, req)
       return onError(error, this)

@@ -1,16 +1,52 @@
 import { OutputListDistributor, TimelineService } from '@app'
+import { Constant } from '@constants'
 import { Distributor } from '@schemas'
 
 class DistributorService {
-  public async createDistributor(batchNo: string): Promise<any> {
+  public async createDistributor(payload: any): Promise<any> {
+    const {
+      batchNo,
+      from,
+      to,
+      status,
+      transactionHash,
+      blockHash,
+      blockNumber,
+      confirmations,
+      byzantium,
+      transactionIndex,
+      contractAddress,
+      nextAcction = Constant.NEXT_ACTION.VACCINATION_STATION,
+      ipfsLink
+    } = payload
+    const results = await Distributor.findOneAndUpdate(
+      { batchNo },
+      {
+        $set: {
+          from,
+          to,
+          status: status === 1 ? 'SUCCESS' : 'UNSUCCESS',
+          transactionHash,
+          blockHash,
+          blockNumber,
+          confirmations,
+          byzantium,
+          transactionIndex,
+          contractAddress,
+          nextAcction,
+          ipfsLink
+        }
+      }
+    )
     await TimelineService.createTimeline({
       batchNo,
-      producer: true,
       warehouser: true,
       distributor: true,
       vaccinationStation: false,
       vaccinatePerson: false
     })
+
+    return results
   }
 
   public async searchDistributor(keyword: string): Promise<any> {
@@ -45,6 +81,30 @@ class DistributorService {
     return {
       data: items,
       total: totalItem
+    }
+  }
+
+  public async countSuccess() {
+    try {
+      const result = await Distributor.countDocuments({
+        status: 'SUCCESS'
+      })
+
+      return result
+    } catch (error: any) {
+      throw new Error(error.message)
+    }
+  }
+
+  public async countUnSuccess() {
+    try {
+      const result = await Distributor.countDocuments({
+        status: 'UNSUCCESS'
+      })
+
+      return result
+    } catch (error: any) {
+      throw new Error(error.message)
     }
   }
 }

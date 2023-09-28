@@ -1,7 +1,63 @@
 import { OutputListUser } from '@app'
+import { Constant } from '@constants'
 import { User } from '@schemas'
 
 class UserService {
+  public async createUser(payload: any) {
+    const {
+      userAddress,
+      name,
+      contactNo,
+      role,
+      isActive,
+      profileHash,
+      from,
+      to,
+      status,
+      transactionHash,
+      blockHash,
+      blockNumber,
+      confirmations,
+      byzantium,
+      transactionIndex,
+      contractAddress,
+      ipfsLink
+    } = payload
+    const results = await User.create({
+      userAddress,
+      name,
+      contactNo,
+      role,
+      isActive,
+      profileHash,
+      from,
+      to,
+      status: status === 1 ? 'SUCCESS' : 'UNSUCCESS',
+      transactionHash,
+      blockHash,
+      blockNumber,
+      confirmations,
+      byzantium,
+      transactionIndex,
+      contractAddress,
+      ipfsLink
+    })
+
+    return results
+  }
+
+  public async searchUser(keyword: string) {
+    try {
+      const result = await User.findOne({
+        $or: [{ userAddress: { $regex: keyword, $options: 'i' } }]
+      })
+
+      return result
+    } catch (error: any) {
+      throw new Error(error.message)
+    }
+  }
+
   public async getUser(_id: string): Promise<any> {
     try {
       const data = await User.findById(_id)
@@ -23,6 +79,10 @@ class UserService {
       data: items,
       total: totalItem
     }
+  }
+
+  public async getUserRole(): Promise<any> {
+    return Constant.USERROLE
   }
 }
 

@@ -1,9 +1,12 @@
+import { IProcess } from '@app'
 import { logError, onError, onSuccess, type Option } from '@constants'
 import { Singleton } from '@providers'
 import { Request as ExpressRequest } from 'express'
 import {
+  Body,
   Controller,
   Get,
+  Post,
   Query,
   Request,
   Route,
@@ -15,6 +18,20 @@ import {
 @Route('process')
 @Security('authorization')
 export class ProcessController extends Controller {
+  @Post('create')
+  public async createProcess(
+    @Request() req: ExpressRequest,
+    @Body() payload: IProcess
+  ): Promise<Option<any>> {
+    try {
+      const result = await Singleton.getProcessInstance().createProcess(payload)
+      return onSuccess(result)
+    } catch (error: any) {
+      logError(error, req)
+      return onError(error, this)
+    }
+  }
+
   @Get('search')
   public async searchProcess(
     @Request() req: ExpressRequest,
@@ -53,6 +70,32 @@ export class ProcessController extends Controller {
       const { data, total } =
         await Singleton.getProcessInstance().getListProcess(page, limit)
       return onSuccess(data, total)
+    } catch (error: any) {
+      logError(error, req)
+      return onError(error, this)
+    }
+  }
+
+  @Get('countsuccess')
+  public async countSuccess(
+    @Request() req: ExpressRequest
+  ): Promise<Option<any>> {
+    try {
+      const result = await Singleton.getProcessInstance().countSuccess()
+      return onSuccess(result)
+    } catch (error: any) {
+      logError(error, req)
+      return onError(error, this)
+    }
+  }
+
+  @Get('countunsuccess')
+  public async countUnSuccess(
+    @Request() req: ExpressRequest
+  ): Promise<Option<any>> {
+    try {
+      const result = await Singleton.getProcessInstance().countUnSuccess()
+      return onSuccess(result)
     } catch (error: any) {
       logError(error, req)
       return onError(error, this)
