@@ -114,8 +114,8 @@ export default function DistributorPage() {
   //     );
 
   //     if (getData.total) setTotal(getData.total);
-  //     if (getTotalSuccess) setTotalSuccess(getTotalSuccess.data.data);
-  //     if (getTotalFailure) setTotalFailure(getTotalFailure.data.data);
+  //     if (getTotalSuccess) setTotalSuccess(getTotalSuccess.data);
+  //     if (getTotalFailure) setTotalFailure(getTotalFailure.data);
   //   }
 
   //   fetchData();

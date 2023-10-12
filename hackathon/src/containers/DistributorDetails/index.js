@@ -16,16 +16,16 @@ export default function DistributorDetails() {
 
   const [dataSearch, setDataSearch] = useState();
 
-  useEffect(() => {
-    async function fetchData() {
-      const data = await axios.get(
-        `${SERVER.baseURL}/distributor?keyword=${id}`
-      );
-      setDataSearch(data[0]);
-    }
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     const data = await axios.get(
+  //       `${SERVER.baseURL}/distributor?keyword=${id}`
+  //     );
+  //     setDataSearch(data[0]);
+  //   }
 
-    fetchData();
-  }, [id]);
+  //   fetchData();
+  // }, [id]);
 
   return (
     <React.Fragment>
@@ -212,8 +212,11 @@ export default function DistributorDetails() {
             </div>
 
             <div className="w-2/5 h-80 flex justify-center items-center bg-gray-50 rounded mt-8 ml-4 rounded p-5 mb-80 mr-16 ">
-              <QRCode
+              {/* <QRCode
                 value={`https://traceability-dapps.vercel.app/qrcode-view/${dataSearch?.ipfsLink}`}
+              /> */}
+              <QRCode
+                value={`https://testnet.bscscan.com/tx/${dataSearch?.transactionHash}`}
               />
             </div>
           </div>

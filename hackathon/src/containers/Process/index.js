@@ -61,38 +61,37 @@ export default function ProcessPage() {
     },
   ];
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     const getData = await axios.get(
-  //       `${SERVER.baseURL}/process/all?page=${currentPage}&limit=10`
-  //     );
-  //     setDataTable(getData.data);
-  //     setTotalItems(getData.total);
+  useEffect(() => {
+    async function fetchData() {
+      // const getData = await axios.get(
+      //   `${SERVER.baseURL}/process/all?page=${currentPage}&limit=10`
+      // );
+      // setDataTable(getData.data);
+      // setTotalItems(getData.total);
+      const getTotalProcess = await axios.get(
+        `${SERVER.baseURL}/process/all?page=${currentPage}&limit=10`
+      );
+      const getTotalDistributor = await axios.get(
+        `${SERVER.baseURL}/distributor/all?page=${currentPage}&limit=10`
+      );
+      const getTotalWarehouse = await axios.get(
+        `${SERVER.baseURL}/warehouser/all?page=${currentPage}&limit=10`
+      );
+      const getTotalStation = await axios.get(
+        `${SERVER.baseURL}/vaccinationStation/all?page=${currentPage}&limit=10`
+      );
+      if (getTotalProcess) setTotalProcess(getTotalProcess.total);
+      if (getTotalDistributor) setTotalDistributor(getTotalDistributor.total);
+      if (getTotalWarehouse) setTotalWarehouse(getTotalWarehouse.total);
+      if (getTotalStation) setTotalStation(getTotalStation.total);
+    }
 
-  //     const getTotalProcess = await axios.get(
-  //       `${SERVER.baseURL}/process/all?page=${currentPage}&limit=10`
-  //     );
-  //     const getTotalDistributor = await axios.get(
-  //       `${SERVER.baseURL}/distributor/all?page=${currentPage}&limit=10`
-  //     );
-  //     const getTotalWarehouse = await axios.get(
-  //       `${SERVER.baseURL}/warehouse/all?page=${currentPage}&limit=10`
-  //     );
-  //     const getTotalStation = await axios.get(
-  //       `${SERVER.baseURL}/vaccinationstation/all?page=${currentPage}&limit=10`
-  //     );
-  //     if (getTotalProcess) setTotalProcess(getTotalProcess.total);
-  //     if (getTotalDistributor) setTotalDistributor(getTotalDistributor.total);
-  //     if (getTotalWarehouse) setTotalWarehouse(getTotalWarehouse.total);
-  //     if (getTotalStation) setTotalStation(getTotalStation.total);
-  //   }
-
-  //   fetchData();
-  // }, [currentPage, total]);
+    fetchData();
+  }, [currentPage]);
 
   const onChangePage = async (page) => {
     const getData = await axios.get(
-      `${SERVER.baseURL}/process/all?currentPage=${page}&perPage=10`
+      `${SERVER.baseURL}/process/all?page=${page}&limit=10`
     );
     setDataTable(getData.data);
   };

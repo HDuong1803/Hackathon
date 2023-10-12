@@ -82,19 +82,19 @@ export default function PersonPage() {
   const [dataTable, setDataTable] = useState([]);
   const [total, setTotal] = useState(undefined);
 
-  useEffect(() => {
-    async function fetchData() {
-      const getData = await axios.get(
-        `${SERVER.baseURL}/user/all?page=${currentPage}&limit=10`
-      );
-      setDataTable(getData.data);
-      setTotalItems(getData.total);
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     const getData = await axios.get(
+  //       `${SERVER.baseURL}/user/all?page=${currentPage}&limit=10`
+  //     );
+  //     setDataTable(getData.data);
+  //     setTotalItems(getData.total);
 
-      if (getData.total) setTotal(getData.total);
-    }
+  //     if (getData.total) setTotal(getData.total);
+  //   }
 
-    fetchData();
-  }, [currentPage, total]);
+  //   fetchData();
+  // }, [currentPage, total]);
 
   const onChangePage = async (page) => {
     const getData = await axios.get(
