@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+  hackathon_frontend:
+    container_name: hackathon_frontend
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    # command: npm run start:dev
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
