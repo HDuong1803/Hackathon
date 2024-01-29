@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Tag } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -16,7 +17,7 @@ import {
 import TableComponent from "../../components/Table";
 
 export default function ProcessPage() {
-  const [totalItems, setTotalItems] = useState();
+  const [totalItems, setTotalItems] = useState(0);
   const [currentPage] = useState(1);
   const [dataTable, setDataTable] = useState([]);
   const [text, setText] = useState("");
@@ -43,31 +44,32 @@ export default function ProcessPage() {
     },
     {
       title: t("dashboard.producer"),
-      dataIndex: "producer",
+      dataIndex: "producerName",
       key: "producer",
       render: (text) => <Tag color="#2f54eb">{text}</Tag>,
     },
     {
       title: t("dashboard.total"),
-      dataIndex: "totalWeight",
-      key: "totalWeight",
+      dataIndex: "quantity",
+      key: "quantity",
       render: (text) => <p>{text}</p>,
     },
     {
-      title: t("dashboard.status"),
-      dataIndex: "status",
-      key: "status",
-      render: (text) => <Tag color={"#237804"}>{text}</Tag>,
+      title: t("dashboard.nextAction"),
+      dataIndex: "nextAction",
+      key: "nextAction",
+      render: (text) => <Tag color={"#237804"}>{text === "WAREHOUSER" ? t("dashboard.warehouse") : text}</Tag>,
     },
   ];
 
   useEffect(() => {
     async function fetchData() {
-      // const getData = await axios.get(
-      //   `${SERVER.baseURL}/process/all?page=${currentPage}&limit=10`
-      // );
-      // setDataTable(getData.data);
-      // setTotalItems(getData.total);
+        const getData = await axios.get(
+          `${SERVER.baseURL}/process/all?page=${currentPage}&limit=10`
+        );
+        setDataTable(getData.data.data);
+        setTotalItems(getData.data.total);
+
       const getTotalProcess = await axios.get(
         `${SERVER.baseURL}/process/all?page=${currentPage}&limit=10`
       );
@@ -80,21 +82,17 @@ export default function ProcessPage() {
       const getTotalStation = await axios.get(
         `${SERVER.baseURL}/vaccinationStation/all?page=${currentPage}&limit=10`
       );
-      if (getTotalProcess) setTotalProcess(getTotalProcess.total);
-      if (getTotalDistributor) setTotalDistributor(getTotalDistributor.total);
-      if (getTotalWarehouse) setTotalWarehouse(getTotalWarehouse.total);
-      if (getTotalStation) setTotalStation(getTotalStation.total);
-    }
 
+      if (getTotalProcess) setTotalProcess(getTotalProcess.data.total);
+      if (getTotalDistributor) setTotalDistributor(getTotalDistributor.data.total);
+      if (getTotalWarehouse) setTotalWarehouse(getTotalWarehouse.data.total);
+      if (getTotalStation) setTotalStation(getTotalStation.data.total);
+    }
     fetchData();
+
   }, [currentPage]);
 
-  const onChangePage = async (page) => {
-    const getData = await axios.get(
-      `${SERVER.baseURL}/process/all?page=${page}&limit=10`
-    );
-    setDataTable(getData.data);
-  };
+  
 
   return (
     <React.Fragment>
@@ -143,7 +141,7 @@ export default function ProcessPage() {
             columns={columns}
             pagination={{
               total: totalItems,
-              onChange: (page, pageSize) => onChangePage(page),
+              // onChange: ,
             }}
           />
         </div>

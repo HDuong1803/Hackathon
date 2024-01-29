@@ -23,7 +23,8 @@
     "producer": "Nhà sản xuất",
     "total": "Tổng",
     "status": "Trạng thái",
-    "createProcess": "Tạo lô hàng"
+    "createProcess": "Tạo lô hàng",
+    "nextAction": "Kế tiếp"
   },
   "warehouse": {
     "title": "Nhà kho",

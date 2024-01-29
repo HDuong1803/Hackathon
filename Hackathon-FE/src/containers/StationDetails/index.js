@@ -140,7 +140,7 @@ export default function StationDetails() {
               <div className="flex justify-between  rounded p-4 ">
                 <p className="font-bold text-gray-700">Next Action</p>
                 <p className="font-bold text-gray-700">
-                  {dataSearch?.nextAcction}
+                  {dataSearch?.nextAction}
                 </p>
               </div>
 
@@ -165,19 +165,7 @@ export default function StationDetails() {
                 </p>
               </div>
 
-              <div className="flex justify-between  rounded p-4 ">
-                <p className="font-bold text-gray-700">Confirmation</p>
-                <p className="font-bold text-gray-700">
-                  {dataSearch?.confirmations}
-                </p>
-              </div>
-
-              <div className="flex justify-between  rounded p-4 ">
-                <p className="font-bold text-gray-700">Byzantium</p>
-                <p className="font-bold text-gray-700">
-                  {dataSearch?.byzantium}
-                </p>
-              </div>
+              
 
               <div className="flex justify-between  rounded p-4 ">
                 <p className="font-bold text-gray-700">Transaction Index</p>
@@ -186,12 +174,7 @@ export default function StationDetails() {
                 </p>
               </div>
 
-              <div className="flex justify-between  rounded p-4 ">
-                <p className="font-bold text-gray-700">Created at</p>
-                <p className="font-bold text-gray-700">
-                  {dataSearch?.createdAt}
-                </p>
-              </div>
+              
             </div>
             <div className="w-2/5 h-80 flex justify-center items-center bg-gray-50 rounded mt-8 ml-4 rounded p-5 mb-80 mr-16 ">
               {/* <QRCode

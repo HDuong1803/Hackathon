@@ -8,8 +8,11 @@ import axios from "axios";
 import NavCover from "../../components/NavCover";
 import NavHeader from "../../components/NavHeader";
 import CardTotal from "../../components/CardTotal";
-import { TotalProgress } from "../../assets/icon";
-import TableComponent from "../../components/Table";
+import {
+  TotalProgress,
+  TotalWarehouse,
+  TotalDistributor,
+} from "../../assets/icon";import TableComponent from "../../components/Table";
 
 export default function DistributorPage() {
   const [text, setText] = useState("");
@@ -60,7 +63,7 @@ export default function DistributorPage() {
       title: t("distributor.quantity"),
       dataIndex: "quantity",
       key: "quantity",
-      render: (text) => <a>{text}</a>,
+      render: (text) => <Tag>{text}</Tag>,
     },
     {
       title: t("distributor.optimumRangeTemp"),
@@ -72,7 +75,7 @@ export default function DistributorPage() {
       title: t("distributor.violate"),
       dataIndex: "violate",
       key: "violate",
-      render: (text) => <a>{text ? "Violate" : "Normal"}</a>,
+      render: (text) => <Tag>{text ? "Violate" : "Normal"}</Tag>,
     },
     {
       title: t("distributor.status"),
@@ -82,8 +85,8 @@ export default function DistributorPage() {
     },
     {
       title: t("distributor.nextAction"),
-      dataIndex: "nextAcction",
-      key: "nextAcction",
+      dataIndex: "nextAction",
+      key: "nextAction",
       render: (text) => (
         <Tag color={"green"}>
           {text === "DISTRIBUTOR" ? t("warehouse.distributor") : text}
@@ -98,34 +101,34 @@ export default function DistributorPage() {
   const [totalSuccess, setTotalSuccess] = useState(undefined);
   const [totalFailure, setTotalFailure] = useState(undefined);
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     const getData = await axios.get(
-  //       `${SERVER.baseURL}/distributor/all?page=${currentPage}&limit=10`
-  //     );
-  //     setDataTable(getData.data);
-  //     setTotalItems(getData.total);
+  useEffect(() => {
+    async function fetchData() {
+      const getData = await axios.get(
+        `${SERVER.baseURL}/distributor/all?page=${currentPage}&limit=10`
+      );
+      setDataTable(getData.data.data);
+      setTotalItems(getData.data.total);
 
-  //     const getTotalSuccess = await axios.get(
-  //       `${SERVER.baseURL}/distributor/countsuccess`
-  //     );
-  //     const getTotalFailure = await axios.get(
-  //       `${SERVER.baseURL}/distributor/countunsuccess`
-  //     );
+      const getTotalSuccess = await axios.get(
+        `${SERVER.baseURL}/distributor/countsuccess`
+      );
+      const getTotalFailure = await axios.get(
+        `${SERVER.baseURL}/distributor/countunsuccess`
+      );
 
-  //     if (getData.total) setTotal(getData.total);
-  //     if (getTotalSuccess) setTotalSuccess(getTotalSuccess.data);
-  //     if (getTotalFailure) setTotalFailure(getTotalFailure.data);
-  //   }
+      if (getData.data.total) setTotal(getData.data.total);
+      if (getTotalSuccess) setTotalSuccess(getTotalSuccess.data.data);
+      if (getTotalFailure) setTotalFailure(getTotalFailure.data.data);
+    }
 
-  //   fetchData();
-  // }, [currentPage, total]);
+    fetchData();
+  }, [currentPage]);
 
   const onChangePage = async (page) => {
     const getData = await axios.get(
-      `${SERVER.baseURL}/distributor/all?currentPage=${page}&perPage=10`
+      `${SERVER.baseURL}/distributor/all?page=${page}&limit=10`
     );
-    setDataTable(getData.data);
+    setDataTable(getData.data.data);
   };
   return (
     <React.Fragment>
@@ -148,11 +151,11 @@ export default function DistributorPage() {
         <div className="main-card mt-8">
           <CardTotal
             srcImg={TotalProgress}
-            quantity={total}
-            desc={t("distributor.create")}
+            quantity={totalItems}
+            desc={t("distributor.title")}
           />
-          {/* <CardTotal srcImg={TotalWarehouse} quantity={totalSuccess} desc={t("distributor.success")} />
-            <CardTotal srcImg={TotalDistributor} quantity={totalFailure} desc={t("distributor.failure")} /> */}
+          <CardTotal srcImg={TotalWarehouse} quantity={totalSuccess} desc={t("distributor.success")} />
+            <CardTotal srcImg={TotalDistributor} quantity={totalFailure} desc={t("distributor.failure")} />
         </div>
         <div className="px-6 mt-8 mr-8">
           <TableComponent

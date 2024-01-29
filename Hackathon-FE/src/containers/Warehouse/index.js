@@ -32,7 +32,7 @@ export default function WarehousePage() {
       key: "batchNo",
       render: (text) => (
         <Link to={`/warehouse/${text}`}>
-          <Tag color={"#120338"}>{text}</Tag>
+          <Tag color={"cyan"}>{text}</Tag>
         </Link>
       ),
     },
@@ -40,25 +40,25 @@ export default function WarehousePage() {
       title: t("warehouse.vaccine"),
       dataIndex: "vaccineName",
       key: "vaccineName",
-      render: (text) => <a>{text}</a>,
+      render: (text) => <Tag color="#2f54eb" >{text}</Tag>,
     },
     {
       title: t("warehouse.quantity"),
       dataIndex: "quantity",
       key: "quantity",
-      render: (text) => <a>{text}</a>,
+      render: (text) => <Tag>{text}</Tag>,
     },
     {
       title: t("warehouse.temperature"),
       dataIndex: "optimumRangeTemp",
       key: "optimumRangeTemp",
-      render: (text) => <a>{text}</a>,
+      render: (text) => <Tag>{text}</Tag>,
     },
     {
       title: t("warehouse.humidity"),
       dataIndex: "optimumRangeHum",
       key: "optimumRangeHum",
-      render: (text) => <a>{text}</a>,
+      render: (text) => <Tag>{text}</Tag>,
     },
     {
       title: t("warehouse.violate"),
@@ -75,7 +75,7 @@ export default function WarehousePage() {
       render: (text) => {
         const date = new Date(Number(text) * 1000);
         const newDate = dayjs(date).format("DD-MM-YYYY HH:mm:ss");
-        return <Tag color={"#096dd9"}>{newDate}</Tag>;
+        return <Tag color={"#092f51"}>{newDate}</Tag>;
       },
     },
     {
@@ -86,10 +86,10 @@ export default function WarehousePage() {
     },
     {
       title: t("warehouse.nextAction"),
-      dataIndex: "nextAcction",
-      key: "nextAcction",
+      dataIndex: "nextAction",
+      key: "nextAction",
       render: (text) => (
-        <Tag color={"#262626"}>
+        <Tag color={"#237804"}>
           {text === "DISTRIBUTOR" ? t("warehouse.distributor") : text}
         </Tag>
       ),
@@ -100,33 +100,33 @@ export default function WarehousePage() {
   const [currentPage] = useState(1);
   const [dataTable, setDataTable] = useState([]);
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     const getData = await axios.get(
-  //       `${SERVER.baseURL}/warehouser/all?page=${currentPage}&limit=10`
-  //     );
-  //     setDataTable(getData.data);
-  //     setTotalItems(getData.total);
+  useEffect(() => {
+    async function fetchData() {
+      const getData = await axios.get(
+        `${SERVER.baseURL}/warehouser/all?page=${currentPage}&limit=10`
+      );
+      setDataTable(getData.data.data);
+      setTotalItems(getData.data.total);
 
-  //     const getTotalSuccess = await axios.get(
-  //       `${SERVER.baseURL}/warehouser/countsuccess`
-  //     );
-  //     const getTotalFailure = await axios.get(
-  //       `${SERVER.baseURL}/warehouser/countunsuccess`
-  //     );
+      const getTotalSuccess = await axios.get(
+        `${SERVER.baseURL}/warehouser/countsuccess`
+      );
+      const getTotalFailure = await axios.get(
+        `${SERVER.baseURL}/warehouser/countunsuccess`
+      );
 
-  //     if (getData.total) setTotal(getData.total);
-  //     if (getTotalSuccess) setTotalSuccess(getTotalSuccess.data);
-  //     if (getTotalFailure) setTotalFailure(getTotalFailure.data);
-  //   }
-  //   fetchData();
-  // }, [currentPage]);
+      if (getData.data.total) setTotal(getData.data.total);
+      if (getTotalSuccess) setTotalSuccess(getTotalSuccess.data.data);
+      if (getTotalFailure) setTotalFailure(getTotalFailure.data.data);
+     }
+    fetchData();
+  }, [currentPage]);
 
   const onChangePage = async (page) => {
     const getData = await axios.get(
       `${SERVER.baseURL}/warehouser/all?page=${page}&limit=10`
     );
-    setDataTable(getData.data);
+    setDataTable(getData.data.data);
   };
 
   return (
@@ -150,10 +150,10 @@ export default function WarehousePage() {
         <div className="main-card mt-8">
           <CardTotal
             srcImg={TotalProgress}
-            quantity={total}
+            quantity={totalItems}
             desc={t("warehouse.title")}
           />
-          {/* <CardTotal
+          <CardTotal
             srcImg={TotalWarehouse}
             quantity={totalSuccess}
             desc={t("warehouse.success")}
@@ -162,7 +162,7 @@ export default function WarehousePage() {
             srcImg={TotalDistributor}
             quantity={totalFailure}
             desc={t("warehouse.failure")}
-          /> */}
+          />
         </div>
 
         <div className="px-6 mt-8 mr-8">

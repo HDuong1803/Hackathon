@@ -1,3 +1,4 @@
+// /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { localization } from "../../config/en";
 import { useTranslation } from "react-i18next";
@@ -17,11 +18,8 @@ const { Option } = Select;
 export default function CreateProcess() {
   const { enterpriseDistributorName } = localization.CreateProcess;
   const { t } = useTranslation();
-  const [producerValue, setProducerValue] = useState("");
-  const [warehouseValue, setWarehouseValue] = useState("");
-  const [distributorValue, setDistributorValue] = useState("");
-  const [vaccinationStationValue, setVaccinationStationValue] = useState("");
-  const [totalWeight, setTotalWeight] = useState("");
+  const [producerValue, setProducerValue] = useState([]);
+  const [quantity, setQuantity] = useState("");
   const [optimumRangeTemp, setOptimumRangeTemp] = useState("");
   const [optimumRangeHum, setOptimumRangeHum] = useState("");
   const [vaccineSupplyChainContract, setVaccineSupplyChainContract] =
@@ -30,36 +28,23 @@ export default function CreateProcess() {
   const [tmpAccountUI, setTmpAccountUI] = useState("");
 
   const handleProducer = (text) => setProducerValue(text);
-  const handleWarehouse = (text) => setWarehouseValue(text);
-  const handleDistributor = (text) => setDistributorValue(text);
-  const handleVaccinationStation = (text) =>
-    setVaccinationStationValue(text.target.value);
-  const handleTotalWeight = (text) => setTotalWeight(text.target.value);
+
+  const handleQuantity = (text) => setQuantity(text.target.value);
   const handleTempRange = (text) => setOptimumRangeTemp(text.target.value);
   const handleHumRange = (text) => setOptimumRangeHum(text.target.value);
 
   const [producerData, setProducerData] = useState([]);
-  const [distributorData, setDistributorData] = useState([]);
-  const [warehouseData, setWarehouseData] = useState([]);
 
-  //   useEffect(() => {
-  //     async function fetchData() {
-  //       startMoralisServer();
-  //       const getProducerData = await axios.get(
-  //         `${SERVER.baseURL}/general/producer`
-  //       );
-  //       setProducerData(getProducerData.data);
-  //       const getDistributorData = await axios.get(
-  //         `${SERVER.baseURL}/general/distributor`
-  //       );
-  //       setDistributorData(getDistributorData.data);
-  //       const getWarehouseData = await axios.get(
-  //         `${SERVER.baseURL}/general/warehouse`
-  //       );
-  //       setWarehouseData(getWarehouseData.data);
-  //     }
-  //     fetchData();
-  //   }, []);
+    useEffect(() => {
+      startMoralisServer();
+      async function fetchData() {
+        const getProducerData = await axios.get(
+          `${SERVER.baseURL}/general/producer`
+        );
+        setProducerData(getProducerData.data.data);
+      }
+      fetchData();
+    }, []);
 
   const onConnectWallet = async () => {
     const { vaccineSPSC } = await getSCEthereumVaccineSupplyChain();
@@ -100,12 +85,12 @@ export default function CreateProcess() {
   const addBasicDetails = async () => {
     if (accounts) {
       try {
-        const transaction = await vaccineSupplyChainContract.addBasicDetails(
+        const transaction = await vaccineSupplyChainContract.methods.addBasicDetails(
           producerValue,
-          totalWeight,
+          quantity,
           optimumRangeTemp,
           optimumRangeHum
-        );
+        ).call();
         toast.info("Create process is pending!", {
           position: "top-right",
           autoClose: 15000,
@@ -126,7 +111,7 @@ export default function CreateProcess() {
             // warehouse: warehouseValue,
             // distributor: distributorValue,
             // vaccinationStation: vaccinationStationValue,
-            totalWeight: Number(totalWeight),
+            quantity: Number(quantity),
             optimumRangeTemp: optimumRangeTemp,
             optimumRangeHum: optimumRangeHum,
             from: tx?.from,
@@ -144,7 +129,7 @@ export default function CreateProcess() {
           const object = {
             batchNo: event?.args[1],
             producer: producerValue,
-            totalWeight: Number(totalWeight),
+            quantity: Number(quantity),
             optimumRangeTemp: optimumRangeTemp,
             optimumRangeHum: optimumRangeHum,
             from: tx?.from,
@@ -169,10 +154,7 @@ export default function CreateProcess() {
           });
 
           setProducerValue("");
-          // setWarehouseValue("");
-          // setDistributorValue("");
-          // setVaccinationStationValue("");
-          setTotalWeight("");
+          setQuantity("");
           setOptimumRangeHum("");
           setOptimumRangeTemp("");
           toast.success("Create process is Success!", {
@@ -328,8 +310,8 @@ export default function CreateProcess() {
                   id="default"
                   type="text"
                   name="default"
-                  value={totalWeight}
-                  onChange={handleTotalWeight}
+                  value={quantity}
+                  onChange={handleQuantity}
                   placeholder={t("producerDetails.quantityHolder")}
                   className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200"
                 />
@@ -408,7 +390,7 @@ export default function CreateProcess() {
                   </p> */}
                 <p className="create-process_right_contain--subtitle pb-2">
                   {t("producerDetails.quantity")}:{" "}
-                  <strong>{totalWeight}</strong>
+                  <strong>{quantity}</strong>
                 </p>
                 <p className="create-process_right_contain--subtitle pb-2">
                   {t("producerDetails.optimumRangeTemp")}:{" "}

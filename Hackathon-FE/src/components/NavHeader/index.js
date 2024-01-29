@@ -15,9 +15,6 @@ export default function NavHeader(props) {
 
   const handleLang = (value) => changeLanguage(value);
 
-  useEffect(() => {
-    i18n.changeLanguage("vn");
-  });
   return (
     <React.Fragment>
       <div className="navheader">

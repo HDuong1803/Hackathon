@@ -12,20 +12,20 @@ export default function LogisticDetails() {
   const onChangeText = (text) => setText(text.target.value);
   const onResetText = () => setText("");
   const onSearch = () => `/details/${text}`;
-  let { id } = useParams();
+  let batchNo = useParams();
 
   const [dataSearch, setDataSearch] = useState();
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     const response = await axios.get(
-  //       `${SERVER.baseURL}/process?keyword=${id}`
-  //     );
-  //     setDataSearch(response.data[0]);
-  //   }
+  useEffect(() => {
+    async function fetchData() {
+      const response = await axios.get(
+        `${SERVER.baseURL}/process/detail?batchNo=${batchNo.id}`
+      );
+      setDataSearch(response.data.data);
+    }
 
-  //   fetchData();
-  // }, [id]);
+    fetchData();
+  }, [batchNo]);
 
   return (
     <React.Fragment>
@@ -37,7 +37,7 @@ export default function LogisticDetails() {
           onResetText={onResetText}
           onSearch={onSearch}
         />
-        <Stepper batchNo={id} />
+        <Stepper batchNo={batchNo} />
         {!dataSearch ? (
           <div className="mt-8 ml-4">
             <h2 className="font-bold text-xl">Search not found: "0 result"</h2>
@@ -50,11 +50,11 @@ export default function LogisticDetails() {
                 <p className="font-bold text-gray-700">#Check</p>
               </div>
               {/* Logistics */}
-              {dataSearch?.producer ? (
+              {dataSearch?.producerName ? (
                 <div className="flex justify-between  rounded p-4 ">
                   <p className="font-bold text-gray-700">Producer</p>
                   <p className="font-bold text-gray-700">
-                    {dataSearch?.producer}
+                    {dataSearch?.producerName}
                   </p>
                 </div>
               ) : null}
@@ -86,11 +86,29 @@ export default function LogisticDetails() {
                   </div>
                 ) : null} */}
 
-              {dataSearch?.totalWeight ? (
+              {dataSearch?.quantity ? (
                 <div className="flex justify-between  rounded p-4 ">
-                  <p className="font-bold text-gray-700">Weight of shipment</p>
+                  <p className="font-bold text-gray-700">Total quantity of shipment</p>
                   <p className="font-bold text-gray-700">
-                    {dataSearch?.totalWeight}
+                    {dataSearch?.quantity}
+                  </p>
+                </div>
+              ) : null}
+
+{dataSearch?.optimumRangeTemp ? (
+                <div className="flex justify-between  rounded p-4 ">
+                  <p className="font-bold text-gray-700">Optimum Temperature</p>
+                  <p className="font-bold text-gray-700">
+                    {dataSearch?.optimumRangeTemp}
+                  </p>
+                </div>
+              ) : null}
+
+              {dataSearch?.optimumRangeHum ? (
+                <div className="flex justify-between  rounded p-4 ">
+                  <p className="font-bold text-gray-700">Optimum Humidity</p>
+                  <p className="font-bold text-gray-700">
+                    {dataSearch?.optimumRangeHum}
                   </p>
                 </div>
               ) : null}
@@ -130,7 +148,7 @@ export default function LogisticDetails() {
               <div className="flex justify-between  rounded p-4 ">
                 <p className="font-bold text-gray-700">Next Action</p>
                 <p className="font-bold text-gray-700">
-                  {dataSearch?.nextAcction}
+                  {dataSearch?.nextAction}
                 </p>
               </div>
 
@@ -151,35 +169,14 @@ export default function LogisticDetails() {
               <div className="flex justify-between  rounded p-4 ">
                 <p className="font-bold text-gray-700">Block number</p>
                 <p className="font-bold text-gray-700">
-                  {dataSearch?.blockNumber}
-                </p>
-              </div>
-
-              <div className="flex justify-between  rounded p-4 ">
-                <p className="font-bold text-gray-700">Confirmation</p>
-                <p className="font-bold text-gray-700">
-                  {dataSearch?.confirmations}
-                </p>
-              </div>
-
-              <div className="flex justify-between  rounded p-4 ">
-                <p className="font-bold text-gray-700">Byzantium</p>
-                <p className="font-bold text-gray-700">
-                  {dataSearch?.byzantium}
+                  {Number(dataSearch?.blockNumber)}
                 </p>
               </div>
 
               <div className="flex justify-between  rounded p-4 ">
                 <p className="font-bold text-gray-700">Transaction Index</p>
                 <p className="font-bold text-gray-700">
-                  {dataSearch?.transactionIndex}
-                </p>
-              </div>
-
-              <div className="flex justify-between  rounded p-4 ">
-                <p className="font-bold text-gray-700">Created at</p>
-                <p className="font-bold text-gray-700">
-                  {dataSearch?.createdAt}
+                  {Number(dataSearch?.transactionIndex)}
                 </p>
               </div>
             </div>

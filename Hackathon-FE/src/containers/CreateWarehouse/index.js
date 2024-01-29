@@ -21,7 +21,6 @@ export default function CreateWarehouse() {
   const [batchNoValue, setBatchNoValue] = useState("");
   const [vaccineNameValue, setVaccineNameValue] = useState("");
   const [quantityValue, setQuantityValue] = useState("");
-  const [priceValue, setPiceValue] = useState("");
   const [optimumTempValue, setOptimumTempValue] = useState("");
   const [optimumHumValue, setOptimumHumValue] = useState("");
   const [locationAddress, setLocationAddress] = useState("");
@@ -35,7 +34,7 @@ export default function CreateWarehouse() {
 
   const handleLocationAddress = (text) => setLocationAddress(text.target.value);
   const handleBatchNo = (text) => setBatchNoValue(text.target.value);
-  const handleVaccineName = (value) => setVaccineNameValue(value);
+  const handleVaccineName = (text) => setVaccineNameValue(text);
   const handleQuantity = (text) => setQuantityValue(text.target.value);
   const handleOptimumTemp = (text) => setOptimumTempValue(text.target.value);
   const handleOptimumHum = (text) => setOptimumHumValue(text.target.value);
@@ -43,41 +42,41 @@ export default function CreateWarehouse() {
   const handleViolation = (value) => setViolationValue(value);
   const [producerData, setProducerData] = useState([]);
 
-  //   useEffect(() => {
-  //     async function fetchData() {
-  //       startMoralisServer();
-  //       const getProducerData = await axios.get(
-  //         `${SERVER.baseURL}/general/producer`
-  //       );
-  //       setProducerData(getProducerData.data);
-  //     }
-  //     fetchData();
-  //   }, []);
+    useEffect(() => {
+      async function fetchData() {
+        startMoralisServer();
+        const getProducerData = await axios.get(
+          `${SERVER.baseURL}/general/producer`
+        );
+        setProducerData(getProducerData.data.data);
+      }
+      fetchData();
+    }, []);
 
-  //   useEffect(() => {
-  //     async function fetchData() {
-  //       if (batchNoValue) {
-  //         const getBatchNoDate = await axios.get(
-  //           `${SERVER.baseURL}/process/search?keyword=${batchNoValue}`
-  //         );
-  //         if (getBatchNoDate?.data) {
-  //           const data = getBatchNoDate.data[0];
-  //           const { producer, totalWeight, optimumRangeHum, optimumRangeTemp } =
-  //             data;
-  //           setVaccineNameValue(producer);
-  //           setQuantityValue(totalWeight);
-  //           setOptimumHumValue(optimumRangeHum);
-  //           setOptimumTempValue(optimumRangeTemp);
-  //         }
-  //       } else {
-  //         setVaccineNameValue("");
-  //         setQuantityValue("");
-  //         setOptimumHumValue("");
-  //         setOptimumTempValue("");
-  //       }
-  //     }
-  //     fetchData();
-  //   }, [batchNoValue]);
+    useEffect(() => {
+      async function fetchData() {
+        if (batchNoValue) {
+          const getBatchNoDate = await axios.get(
+            `${SERVER.baseURL}/process/search?keyword=${batchNoValue}`
+          );
+          if (getBatchNoDate?.data.data) {
+            const data = getBatchNoDate.data[0];
+            const { producer, totalWeight, optimumRangeHum, optimumRangeTemp } =
+              data;
+            setVaccineNameValue(producer);
+            setQuantityValue(totalWeight);
+            setOptimumHumValue(optimumRangeHum);
+            setOptimumTempValue(optimumRangeTemp);
+          }
+        } else {
+          setVaccineNameValue("");
+          setQuantityValue("");
+          setOptimumHumValue("");
+          setOptimumTempValue("");
+        }
+      }
+      fetchData();
+    }, [batchNoValue]);
 
   const onConnectWallet = async () => {
     const { vaccineSPSC } = await getSCEthereumVaccineSupplyChain();
@@ -118,15 +117,6 @@ export default function CreateWarehouse() {
   const updateWarehouser = async () => {
     if (accounts) {
       const isViolate = violationValue === "true";
-      console.log(
-        batchNoValue,
-        vaccineNameValue,
-        quantityValue,
-        storageDateValue,
-        optimumTempValue,
-        optimumHumValue,
-        isViolate
-      );
       const transaction = await vaccineSupplyChainContract.updateWarehouser(
         batchNoValue,
         vaccineNameValue,
@@ -284,21 +274,23 @@ export default function CreateWarehouse() {
               {vaccineNameValue.length > 0 ? (
                 <div className="flex flex-col space-y-2 mb-4">
                   <label
-                    htmlFor="default"
-                    className="text-gray-700 select-none font-medium"
-                  >
+                    htmlFor={t("producerDetails.producer")}
+                    className="block text-sm font-medium text-gray-700"
+                    >
                     {t("warehouseForm.vaccineName")}
                   </label>
-                  <input
-                    disabled
-                    id="default"
-                    type="text"
-                    name="default"
+                  <Select
+                    id="country"
+                    name="country"
+                    autoComplete="country-name"
                     value={vaccineNameValue}
                     onChange={handleQuantity}
                     placeholder={t("warehouseForm.vaccineName")}
-                    className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200"
-                  />
+                  >
+                    {producerData.map((item) => {
+                    return <Option value={item.content}>{item.content}</Option>;
+                  })}
+                  </Select>
                 </div>
               ) : (
                 <div className="flex flex-col space-y-2 mb-4">

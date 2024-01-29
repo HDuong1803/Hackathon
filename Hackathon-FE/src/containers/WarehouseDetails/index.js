@@ -6,25 +6,26 @@ import Stepper from "../../components/Stepper";
 import axios from "axios";
 import { SERVER } from "../../constants/Config";
 import QRCode from "react-qr-code";
+import dayjs from "dayjs";
 
 export default function WarehouseDetails() {
   const [text, setText] = useState("");
   const onChangeText = (text) => setText(text.target.value);
   const onResetText = () => setText("");
   const onSearch = () => `/warehouse/${text}`;
-  let { id } = useParams();
+  let batchNo = useParams();
 
   const [dataSearch, setDataSearch] = useState();
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     const data = await axios.get(
-  //       `${SERVER.baseURL}/warehouser/search?keyword=${id}`
-  //     );
-  //     setDataSearch(data.data[0]);
-  //   }
-  //   fetchData();
-  // });
+  useEffect(() => {
+    async function fetchData() {
+      const response = await axios.get(
+        `${SERVER.baseURL}/warehouser/detail?batchNo=${batchNo.id}`
+      );
+      setDataSearch(response.data.data);
+    }
+    fetchData();
+  }, [batchNo]);
 
   return (
     <React.Fragment>
@@ -36,7 +37,7 @@ export default function WarehouseDetails() {
           onResetText={onResetText}
           onSearch={onSearch}
         />
-        <Stepper batchNo={id} />
+        <Stepper batchNo={batchNo} />
         {!dataSearch ? (
           <div className="mt-8 ml-4">
             <h2 className="font-bold text-xl">Search not found: "0 result"</h2>
@@ -67,27 +68,20 @@ export default function WarehouseDetails() {
                 </div>
               ) : null}
 
-              {dataSearch?.price ? (
-                <div className="flex justify-between  rounded p-4 ">
-                  <p className="font-bold text-gray-700">Price</p>
-                  <p className="font-bold text-gray-700">{dataSearch?.price}</p>
-                </div>
-              ) : null}
-
-              {dataSearch?.optimumTemp ? (
+              {dataSearch?.optimumRangeTemp ? (
                 <div className="flex justify-between  rounded p-4 ">
                   <p className="font-bold text-gray-700">Optimum Temperature</p>
                   <p className="font-bold text-gray-700">
-                    {dataSearch?.optimumTemp}
+                    {dataSearch?.optimumRangeTemp}
                   </p>
                 </div>
               ) : null}
 
-              {dataSearch?.optimumHum ? (
+              {dataSearch?.optimumRangeHum ? (
                 <div className="flex justify-between  rounded p-4 ">
                   <p className="font-bold text-gray-700">Optimum Humidity</p>
                   <p className="font-bold text-gray-700">
-                    {dataSearch?.optimumHum}
+                    {dataSearch?.optimumRangeHum}
                   </p>
                 </div>
               ) : null}
@@ -105,7 +99,7 @@ export default function WarehouseDetails() {
                 <div className="flex justify-between  rounded p-4 ">
                   <p className="font-bold text-gray-700">Storage date</p>
                   <p className="font-bold text-gray-700">
-                    {dataSearch?.storageDate}
+                    {dayjs(new Date(Number(dataSearch?.storageDate) * 1000)).format("DD-MM-YYYY HH:mm:ss")}
                   </p>
                 </div>
               ) : null}
@@ -145,7 +139,7 @@ export default function WarehouseDetails() {
               <div className="flex justify-between  rounded p-4 ">
                 <p className="font-bold text-gray-700">Next Action</p>
                 <p className="font-bold text-gray-700">
-                  {dataSearch?.nextAcction}
+                  {dataSearch?.nextAction}
                 </p>
               </div>
 
@@ -166,35 +160,14 @@ export default function WarehouseDetails() {
               <div className="flex justify-between  rounded p-4 ">
                 <p className="font-bold text-gray-700">Block number</p>
                 <p className="font-bold text-gray-700">
-                  {dataSearch?.blockNumber}
-                </p>
-              </div>
-
-              <div className="flex justify-between  rounded p-4 ">
-                <p className="font-bold text-gray-700">Confirmation</p>
-                <p className="font-bold text-gray-700">
-                  {dataSearch?.confirmations}
-                </p>
-              </div>
-
-              <div className="flex justify-between  rounded p-4 ">
-                <p className="font-bold text-gray-700">Byzantium</p>
-                <p className="font-bold text-gray-700">
-                  {dataSearch?.byzantium}
+                  {Number(dataSearch?.blockNumber)}
                 </p>
               </div>
 
               <div className="flex justify-between  rounded p-4 ">
                 <p className="font-bold text-gray-700">Transaction Index</p>
                 <p className="font-bold text-gray-700">
-                  {dataSearch?.transactionIndex}
-                </p>
-              </div>
-
-              <div className="flex justify-between  rounded p-4 ">
-                <p className="font-bold text-gray-700">Created at</p>
-                <p className="font-bold text-gray-700">
-                  {dataSearch?.createdAt}
+                  {Number(dataSearch?.transactionIndex)}
                 </p>
               </div>
             </div>
