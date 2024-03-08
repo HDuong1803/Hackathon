@@ -8,10 +8,8 @@
 
 <h4 align="center">A traceability of covid 19 vaccine system<a href="http://electron.atom.io" target="_blank"></a>.</h4>
 
-[Figma Design - Traceability of Covid-19 Vaccine System](https://www.figma.com/file/pIQ6FSknJ8BG7iwP7oYmUi/Khoaluantotnghiep?node-id=0%3A1)
-<br>
-[Video Demo](https://drive.google.com/file/d/1ew1Gae4bZBA8EKxSvlpPJt_wlLd0zteS/view?usp=sharing)
------
+---
+
 <h1 align="center">High level architecture</h1>
 <img src="images/diagram.jpg"/>
 -----
@@ -36,7 +34,6 @@
   <br />
 </div>
 
-
 <br />
 <div>
   <h1 align="center">2. Warehouser Flow</h1>
@@ -53,7 +50,6 @@
   <br />
 </div>
 
-
 <br />
 <div>
   <h1 align="center">3. Distributor Flow</h1>
@@ -61,16 +57,10 @@
   <p align="center">Image 3.1 Dashboard (distributor)</p>
   <br />
 
-  <img src="images/distributor/create_distributor.png" />
-  <p align="center">Image 3.2 Distribute a batch of vaccines</p>
-  <br />
-
   <img src="images/distributor/distributor_details.png" />
   <p align="center">Image 3.3 Distribute Details</p>
   <br />
 </div>
-
-
 
 <br />
 <div>
@@ -87,7 +77,6 @@
   <p align="center">Image 4.3 Vaccination Station Details</p>
   <br />
 </div>
-
 
 <br />
 <div>
